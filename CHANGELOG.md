@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-04-21
+
 ### Changed
 
 - Renamed the in-proxy command to `uuid`

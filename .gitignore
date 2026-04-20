@@ -1,38 +1,36 @@
 /.idea/*
 !/.idea/runConfigurations
+/.vscode/
 *.iml
-/run/
-/log/
+*.ipr
+*.class
+*.tmp
+.DS_Store
+
 /build/
 /.gradle/
-*.class
-*.ipr
 /out/
-.DS_Store
-# any json-like file in top directory, including configs, auth cache, etc.
-/*.json*
-*.tmp
-/.vscode
+/run/
+/log/
+
+# Local ZenithProxy runtime files
 /launcher
+/launcher-python*
 /ViaLoader/
-dist/
+/plugins/
+/maps/
+/replays/
+
+# Local config and generated artifacts
+/*.json*
 /*.spec
-__pycache__/
 *.exe
 *.zip
-/launcher-python*
-maps/
-replays/
-plugins/
+dist/
+__pycache__/
 
-dataGenerator/run
+# Nested helper project outputs
 /dataGenerator/.gradle
-
-/dataGenerator/build
 /dataGenerator/.idea
-
-# Ignore Gradle project-specific cache directory
-.gradle
-
-# Ignore Gradle build output directory
-build
+/dataGenerator/build
+/dataGenerator/run

@@ -1,47 +1,55 @@
 # ZenithProxyOfflineUUID
 
-A simple [ZenithProxy](https://github.com/rfresh2/ZenithProxy) plugin that overrides the offline UUID used during login.
+[![Build](https://github.com/AeiouJx/ZenithProxyOfflineUUID/actions/workflows/build.yml/badge.svg)](https://github.com/AeiouJx/ZenithProxyOfflineUUID/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/AeiouJx/ZenithProxyOfflineUUID)](https://github.com/AeiouJx/ZenithProxyOfflineUUID/releases)
+[![License](https://img.shields.io/github/license/AeiouJx/ZenithProxyOfflineUUID)](LICENSE)
 
-This is useful when you want a stable offline UUID for a specific account, or when you want ZenithProxy to generate a predictable UUID from a custom prefix plus the username.
+A ZenithProxy plugin that overrides the offline UUID used during login.
+
+It supports two modes:
+
+- force a fixed UUID
+- generate a deterministic UUID from `prefix + username`
+
+This is useful when you want stable offline identity behavior across reconnects, proxies, or custom account setups.
 
 ## Features
 
-- Overrides the `profileId` in the login `ServerboundHelloPacket`
-- Supports a fixed offline UUID from config or command
+- Rewrites the login `profileId` in `ServerboundHelloPacket`
+- Supports a fixed configured UUID
 - Supports deterministic UUID generation from `prefix + username`
-- Syncs the client-side `MinecraftProtocol` profile UUID to match the overridden login UUID
-- Includes an in-proxy command for enabling, disabling, and updating settings
+- Keeps the client-side `MinecraftProtocol` profile UUID in sync with the modified login UUID
+- Includes a simple in-proxy command for enabling, disabling, and updating settings
+- Builds as a normal ZenithProxy Java plugin jar
 
 ## Compatibility
 
 - ZenithProxy `1.21.4-SNAPSHOT`
-- Java plugin release channel for ZenithProxy
+- Java plugin release channel
+- Java 21+ for users
 
 ## Installation
 
-1. Build the plugin:
+### Option 1: Download a release
 
-```powershell
-.\gradlew.bat build
-```
-
-2. Find the built jar in `build/libs`.
-3. Copy the jar into the `plugins` folder next to your ZenithProxy launcher.
+1. Open the [Releases](https://github.com/AeiouJx/ZenithProxyOfflineUUID/releases) page.
+2. Download the latest `ZenithProxyOfflineUUID-<version>.jar`.
+3. Put the jar in the `plugins` folder next to your ZenithProxy launcher.
 4. Restart ZenithProxy.
 
-## Build
+### Option 2: Build from source
 
 ```powershell
 .\gradlew.bat build
 ```
 
-The output jar will be placed in `build/libs`.
+The built jar will be placed in `build/libs`.
 
 ## Configuration
 
 The plugin registers its own config file through ZenithProxy.
 
-Current config fields:
+Example config:
 
 ```json
 {
@@ -51,11 +59,11 @@ Current config fields:
 }
 ```
 
-Field meanings:
+Fields:
 
 - `enabled`: turns the module on or off
-- `prefix`: used to generate a deterministic UUID from `prefix + username` when `offlineUuid` is not set
-- `offlineUuid`: if set, this UUID is forced directly for login
+- `prefix`: used when generating a deterministic UUID from `prefix + username`
+- `offlineUuid`: if set, this UUID is forced directly during login
 
 ## Commands
 
@@ -78,18 +86,35 @@ offlineUUID clear
 Behavior:
 
 - `offlineUUID on|off`: enable or disable the module
-- `offlineUUID <prefix>`: update the UUID generation prefix
+- `offlineUUID <prefix>`: set the deterministic UUID prefix
 - `offlineUUID set <uuid>`: force a specific offline UUID
-- `offlineUUID clear`: clear the fixed UUID and fall back to generated UUID mode
+- `offlineUUID clear`: clear the fixed UUID and return to prefix-based UUID generation
 
 ## How It Works
 
-When enabled, the plugin intercepts the login packet sent by the client and replaces the UUID with either:
+When enabled, the plugin intercepts the login packet and replaces the UUID with either:
 
 - the configured fixed UUID, or
 - a deterministic UUID generated from `prefix + username`
 
-It also updates the client protocol profile UUID so the session state stays consistent with the modified login packet.
+It also updates the local protocol profile UUID so the client session state matches the modified login packet.
+
+## Building
+
+```powershell
+.\gradlew.bat build
+```
+
+Output:
+
+- `build/libs/ZenithProxyOfflineUUID-<version>.jar`
+
+## Release Workflow
+
+This repository includes GitHub Actions for automation:
+
+- every push and pull request runs the build workflow
+- pushing a tag like `v1.0.0` creates a GitHub Release and uploads the built jar automatically
 
 ## Project Info
 
@@ -97,9 +122,13 @@ It also updates the client protocol profile UUID so the session state stays cons
 - Plugin id: `offline-uuid`
 - Package: `dev.zenith.offlineuuid`
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ## Disclaimer
 
-This plugin is intended for offline UUID behavior customization inside ZenithProxy. Make sure you understand how your target server handles offline-mode UUIDs before using it in production.
+This plugin changes offline UUID behavior inside ZenithProxy. Make sure you understand how your target server handles offline-mode identities before using it in production.
 
 ## License
 

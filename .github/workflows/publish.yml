@@ -33,9 +33,18 @@ jobs:
       - name: Build plugin
         run: ./gradlew build
 
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          JAR_NAME="$(basename build/libs/*.jar)"
+          sed \
+            -e "s/__VERSION__/${GITHUB_REF_NAME}/g" \
+            -e "s/__JAR_NAME__/${JAR_NAME}/g" \
+            .github/release-template.md > release-notes.md
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
+          body_path: release-notes.md
           files: build/libs/*.jar

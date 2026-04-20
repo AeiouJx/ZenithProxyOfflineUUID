@@ -1,75 +1,106 @@
-# ZenithProxy Example Plugin
+# ZenithProxyOfflineUUID
 
-[ZenithProxy](https://github.com/rfresh2/ZenithProxy) is a Minecraft proxy and bot.
+A simple [ZenithProxy](https://github.com/rfresh2/ZenithProxy) plugin that overrides the offline UUID used during login.
 
-This repository is an example core plugin for ZenithProxy, allowing you to add custom modules and commands.
+This is useful when you want a stable offline UUID for a specific account, or when you want ZenithProxy to generate a predictable UUID from a custom prefix plus the username.
 
-## Installing Plugins
+## Features
 
-Plugins are only supported on the `java` ZenithProxy release channel (i.e. not `linux`).
+- Overrides the `profileId` in the login `ServerboundHelloPacket`
+- Supports a fixed offline UUID from config or command
+- Supports deterministic UUID generation from `prefix + username`
+- Syncs the client-side `MinecraftProtocol` profile UUID to match the overridden login UUID
+- Includes an in-proxy command for enabling, disabling, and updating settings
 
-Place plugin jars in the `plugins` folder inside the same folder as the ZenithProxy launcher.
+## Compatibility
 
-Restart ZenithProxy to load plugins. Loading plugins after launch or hot reloading is not supported.
+- ZenithProxy `1.21.4-SNAPSHOT`
+- Java plugin release channel for ZenithProxy
 
-## Creating Plugins
+## Installation
 
-Use this repository as a template to create your own plugin repository.
+1. Build the plugin:
 
-### Plugin Structure
+```powershell
+.\gradlew.bat build
+```
 
-Each plugin needs a main class that implements `ZenithProxyPlugin` and is annotated with `@Plugin`.
+2. Find the built jar in `build/libs`.
+3. Copy the jar into the `plugins` folder next to your ZenithProxy launcher.
+4. Restart ZenithProxy.
 
-Plugin metadata like its unique id, version, and supported MC versions is defined in the `@Plugin` annotation.
+## Build
 
-[See example](https://github.com/rfresh2/ZenithProxyExamplePlugin/blob/1.21.4/src/main/java/org/example/ExamplePlugin.java)
+```powershell
+.\gradlew.bat build
+```
 
-### Plugin API
+The output jar will be placed in `build/libs`.
 
-The `ZenithProxyPlugin` interface requires you to implement an `onLoad` method.
+## Configuration
 
-This method provides a `PluginAPI` object that you can use to register modules, commands, and config files.
+The plugin registers its own config file through ZenithProxy.
 
-`Module` and `Command` classes are implemented the same as in the ZenithProxy source code.
+Current config fields:
 
-I recommend looking at existing modules, commands, and plugins for examples.
+```json
+{
+  "enabled": false,
+  "prefix": "OfflinePlayer",
+  "offlineUuid": null
+}
+```
 
-* [Module](https://github.com/rfresh2/ZenithProxy/tree/1.21.4/src/main/java/com/zenith/module)
-* [Command](https://github.com/rfresh2/ZenithProxy/tree/1.21.4/src/main/java/com/zenith/command)
-* Plugins
-  * [ZenithProxyVillagerTrader](https://github.com/rfresh2/ZenithProxyVillagerTrader)
-  * [ZenithProxyWebAPI](https://github.com/rfresh2/ZenithProxyWebAPI)
-  * [ZenithProxyChatControl](https://github.com/rfresh2/ZenithProxyChatControl)
-  * More in [my discord server](https://discord.com/channels/1127460556710883391/1369081651564515358)
+Field meanings:
 
-### JavaDocs
+- `enabled`: turns the module on or off
+- `prefix`: used to generate a deterministic UUID from `prefix + username` when `offlineUuid` is not set
+- `offlineUuid`: if set, this UUID is forced directly for login
 
-https://maven.2b2t.vc/javadoc/releases/com/zenith/ZenithProxy/1.21.4-SNAPSHOT
+## Commands
 
-### Building Plugins
+Base command:
 
-Execute the Gradle `build` task: `./gradlew build` - or double-click the task in Intellij
+```text
+offlineUUID
+```
 
-The built plugin jar will be in the `build/libs` directory.
+Examples:
 
-### Testing Plugins
+```text
+offlineUUID on
+offlineUUID off
+offlineUUID MyPrefix:
+offlineUUID set 123e4567-e89b-12d3-a456-426614174000
+offlineUUID clear
+```
 
-Execute the `run` task: `./gradlew run` - or double-click the task in Intellij
+Behavior:
 
-This will run ZenithProxy with your plugin loaded in the `run` directory.
+- `offlineUUID on|off`: enable or disable the module
+- `offlineUUID <prefix>`: update the UUID generation prefix
+- `offlineUUID set <uuid>`: force a specific offline UUID
+- `offlineUUID clear`: clear the fixed UUID and fall back to generated UUID mode
 
-### New Plugin Checklist
+## How It Works
 
-1. Edit `gradle.properties`:
-   - `plugin_name` - Name of your plugin, shown to users and in the plugin jar file name (e.g. `ExamplePlugin`)
-   - `plugin_id` - Unique identifier for your plugin (e.g. `example-plugin`)
-     - Must start with a lowercase letter and contain only lowercase letters, numbers, or dashes (`-`)
-   - `mc` - MC version of ZenithProxy your plugin is compiled for (e.g. `1.21.4`)
-   - `maven_group` - Java package for your project (e.g. `com.github.rfresh2`)
-1. Move files to your new corresponding package / maven group:
-   - Example: `src/main/java/org/example` -> `src/main/java/com/github/rfresh2`
-   - First create the new package in `src/main/java`. Then click and drag original subpackages/classes to your new one
-   - Do this with Intellij to avoid manually editing all the source files
-   - You must also create and move package folders for the `src/main/templates` folder
-1. Edit `ExamplePlugin.java`, or remove it and create a new main class
-   - Make sure to update the `@Plugin` annotation
+When enabled, the plugin intercepts the login packet sent by the client and replaces the UUID with either:
+
+- the configured fixed UUID, or
+- a deterministic UUID generated from `prefix + username`
+
+It also updates the client protocol profile UUID so the session state stays consistent with the modified login packet.
+
+## Project Info
+
+- Plugin name: `ZenithProxyOfflineUUID`
+- Plugin id: `offline-uuid`
+- Package: `dev.zenith.offlineuuid`
+
+## Disclaimer
+
+This plugin is intended for offline UUID behavior customization inside ZenithProxy. Make sure you understand how your target server handles offline-mode UUIDs before using it in production.
+
+## License
+
+This repository is licensed under the [LICENSE](LICENSE) file included in the project.

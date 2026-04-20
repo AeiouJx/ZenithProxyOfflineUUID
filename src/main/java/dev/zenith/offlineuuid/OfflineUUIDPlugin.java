@@ -11,7 +11,7 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 @Plugin(
     id = BuildConstants.PLUGIN_ID,
     version = BuildConstants.VERSION,
-    description = "ZenithProxy OfflineUUID",
+    description = "ZenithProxy UUID control plugin",
     url = "https://github.com/aeioujx/ZenithProxyOfflineUUID",
     authors = {"aeioujx"},
     mcVersions = {BuildConstants.MC_VERSION} // to indicate any MC version: @Plugin(mcVersions = "*")
@@ -25,11 +25,11 @@ public class OfflineUUIDPlugin implements ZenithProxyPlugin {
     @Override
     public void onLoad(PluginAPI pluginAPI) {
         LOG = pluginAPI.getLogger();
-        LOG.info("OfflineUUID Plugin loading...");
+        LOG.info("UUID Plugin loading...");
         // initialize any configurations before modules or commands might need to read them
         PLUGIN_CONFIG = pluginAPI.registerConfig(BuildConstants.PLUGIN_ID, OfflineUUIDConfig.class);
         pluginAPI.registerModule(new OfflineUUID());
         pluginAPI.registerCommand(new OfflineUUIDCommand());
-        LOG.info("OfflineUUID Plugin loaded!");
+        LOG.info("UUID Plugin loaded!");
     }
 }

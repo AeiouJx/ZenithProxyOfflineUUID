@@ -4,23 +4,49 @@
 [![Release](https://img.shields.io/github/v/release/AeiouJx/ZenithProxyOfflineUUID)](https://github.com/AeiouJx/ZenithProxyOfflineUUID/releases)
 [![License](https://img.shields.io/github/license/AeiouJx/ZenithProxyOfflineUUID)](LICENSE)
 
-A ZenithProxy plugin that overrides the offline UUID used during login.
+A ZenithProxy plugin for controlling UUID rewriting separately on the proxy `server` side and `client` side.
 
-It supports two modes:
+In practice, the useful part is usually the `client` side:
 
-- force a fixed UUID
-- generate a deterministic UUID from `prefix + username`
+- `server`: affects local Minecraft clients connecting into ZenithProxy
+- `client`: affects ZenithProxy connecting outward to the target Minecraft server
 
-This is useful when you want stable offline identity behavior across reconnects, proxies, or custom account setups.
+## Current Design
+
+This plugin now supports split behavior:
+
+- separate `server` and `client` configuration
+- `original`, `fixed`, `random`, and `generated` modes
+- optional `prefix + username` generation
+- client-side protocol profile synchronization
+
+Recommended usage:
+
+- keep `server` UUID rewriting disabled
+- use `client` UUID rewriting only when ZenithProxy is logging in with an offline account and the target server expects a specific UUID pattern
+
+## Security Note
+
+`server` UUID rewriting is not recommended as a security mechanism.
+
+ZenithProxy whitelist checks are effectively UUID-based, so if you rewrite the UUID of a local player connection to match a whitelisted UUID, that can bypass the intended trust boundary.
+
+Recommended safe setup:
+
+```text
+uuid on
+uuid server off
+uuid client on
+```
 
 ## Features
 
-- Rewrites the login `profileId` in `ServerboundHelloPacket`
-- Supports a fixed configured UUID
-- Supports deterministic UUID generation from `prefix + username`
-- Keeps the client-side `MinecraftProtocol` profile UUID in sync with the modified login UUID
-- Includes a simple in-proxy command for enabling, disabling, and updating settings
-- Builds as a normal ZenithProxy Java plugin jar
+- Rewrites login `profileId` values in `ServerboundHelloPacket`
+- Splits UUID control between ZenithProxy inbound and outbound login flow
+- Supports `original`, `fixed`, `random`, and `generated` UUID modes
+- Supports generated UUIDs with or without a prefix
+- Only applies client-side UUID rewriting when ZenithProxy is using offline authentication
+- Keeps the client-side `MinecraftProtocol` profile UUID synchronized with outbound UUID changes
 
 ## Compatibility
 
@@ -33,7 +59,7 @@ This is useful when you want stable offline identity behavior across reconnects,
 ### Option 1: Download a release
 
 1. Open the [Releases](https://github.com/AeiouJx/ZenithProxyOfflineUUID/releases) page.
-2. Download the latest `ZenithProxyOfflineUUID-<version>.jar`.
+2. Download the latest `ZenithProxyUUID-<version>.jar` or the published plugin jar.
 3. Put the jar in the `plugins` folder next to your ZenithProxy launcher.
 4. Restart ZenithProxy.
 
@@ -45,90 +71,120 @@ This is useful when you want stable offline identity behavior across reconnects,
 
 The built jar will be placed in `build/libs`.
 
-## Configuration
-
-The plugin registers its own config file through ZenithProxy.
-
-Example config:
-
-```json
-{
-  "enabled": false,
-  "prefix": "OfflinePlayer",
-  "offlineUuid": null
-}
-```
-
-Fields:
-
-- `enabled`: turns the module on or off
-- `prefix`: used when generating a deterministic UUID from `prefix + username`
-- `offlineUuid`: if set, this UUID is forced directly during login
-
 ## Commands
 
 Base command:
 
 ```text
-offlineUUID
+uuid
 ```
 
 Examples:
 
 ```text
-offlineUUID on
-offlineUUID off
-offlineUUID MyPrefix:
-offlineUUID set 123e4567-e89b-12d3-a456-426614174000
-offlineUUID clear
+uuid on
+uuid server off
+uuid client on
+uuid client mode generated
+uuid client prefix OfflinePlayer:
+uuid client usePrefix on
+uuid client mode fixed
+uuid client set 123e4567-e89b-12d3-a456-426614174000
+uuid client mode random
 ```
 
-Behavior:
+Available side commands:
 
-- `offlineUUID on|off`: enable or disable the module
-- `offlineUUID <prefix>`: set the deterministic UUID prefix
-- `offlineUUID set <uuid>`: force a specific offline UUID
-- `offlineUUID clear`: clear the fixed UUID and return to prefix-based UUID generation
+- `uuid server on|off`
+- `uuid client on|off`
+- `uuid server mode <original/fixed/random/generated>`
+- `uuid client mode <original/fixed/random/generated>`
+- `uuid server prefix <value>`
+- `uuid client prefix <value>`
+- `uuid server usePrefix on|off`
+- `uuid client usePrefix on|off`
+- `uuid server set <uuid>`
+- `uuid client set <uuid>`
+- `uuid server clear`
+- `uuid client clear`
+
+Mode meanings:
+
+- `original`: do not rewrite the UUID
+- `fixed`: always use the configured UUID
+- `random`: generate a random UUID for the login
+- `generated`: generate a deterministic UUID from either `username` or `prefix + username`
+
+## Typical Usage
+
+### Safe default
+
+```text
+uuid on
+uuid server off
+uuid client on
+uuid client mode generated
+uuid client prefix OfflinePlayer:
+uuid client usePrefix on
+```
+
+### Fixed outbound UUID
+
+```text
+uuid on
+uuid server off
+uuid client on
+uuid client mode fixed
+uuid client set 70542937-7f25-32a5-8a47-600e13eb5b68
+```
+
+### Random outbound UUID
+
+```text
+uuid on
+uuid server off
+uuid client on
+uuid client mode random
+```
 
 ## How It Works
 
-When enabled, the plugin intercepts the login packet and replaces the UUID with either:
+When enabled, the plugin intercepts login packets and can replace the UUID before the login continues.
 
-- the configured fixed UUID, or
-- a deterministic UUID generated from `prefix + username`
+- `server` side changes inbound player UUIDs before ZenithProxy processes the local login
+- `client` side changes outbound UUIDs before ZenithProxy connects to the target server
 
-It also updates the local protocol profile UUID so the client session state matches the modified login packet.
+The client-side rewrite also updates the internal `MinecraftProtocol` profile UUID so session state remains consistent.
 
-## Building
+## Limitation
 
-```powershell
-.\gradlew.bat build
-```
+This plugin does not bypass Mojang online-mode authentication.
 
-Output:
+If a target server requires authenticated online-mode login, changing UUID alone will not make an offline-auth ZenithProxy session valid there. This plugin is only for UUID control, not account authentication bypass.
 
-- `build/libs/ZenithProxyOfflineUUID-<version>.jar`
+## Versioning
+
+Plugin versions are manual.
+
+To release a new version, update `plugin_version` in [gradle.properties](D:\Downloads\ZenithProxy\ZenithProxyOfflineUUID\gradle.properties), then build and tag the release.
 
 ## Release Workflow
 
 This repository includes GitHub Actions for automation:
 
 - every push and pull request runs the build workflow
-- pushing a tag like `v1.0.0` creates a GitHub Release and uploads the built jar automatically
+- pushing a tag like `v1.0.1` creates a GitHub Release and uploads the built jar automatically
 
 ## Project Info
 
-- Plugin name: `ZenithProxyOfflineUUID`
-- Plugin id: `offline-uuid`
+- Plugin name: `ZenithProxyUUID`
+- Plugin id: `uuid`
 - Package: `dev.zenith.offlineuuid`
+- Repository name: `ZenithProxyOfflineUUID`
 
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md).
-
-## Disclaimer
-
-This plugin changes offline UUID behavior inside ZenithProxy. Make sure you understand how your target server handles offline-mode identities before using it in production.
 
 ## License
 

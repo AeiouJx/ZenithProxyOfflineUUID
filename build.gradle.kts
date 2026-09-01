@@ -18,7 +18,7 @@ zenithProxyPlugin {
         "maven_group" to group as String,
     )
     // the minimum supported java version for users of your plugin
-    javaReleaseVersion = JavaLanguageVersion.of(21)
+    javaReleaseVersion = JavaLanguageVersion.of(25)
 }
 
 repositories {
@@ -39,6 +39,8 @@ dependencies {
 
 tasks {
     shadowJar {
+        archiveBaseName.set("${project.name}-${mc}")
+
         /**
          * relocate shaded dependencies to avoid conflicts with other plugins
          * transitive dependencies should also be relocated or removed (with exclude)

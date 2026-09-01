@@ -39,6 +39,8 @@ dependencies {
 
 tasks {
     shadowJar {
+        archiveBaseName.set("${project.name}-${mc}")
+
         /**
          * relocate shaded dependencies to avoid conflicts with other plugins
          * transitive dependencies should also be relocated or removed (with exclude)

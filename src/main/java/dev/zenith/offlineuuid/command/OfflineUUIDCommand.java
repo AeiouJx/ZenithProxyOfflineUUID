@@ -33,6 +33,7 @@ public class OfflineUUIDCommand extends Command {
                 """)
             .usageLines(
                 "on/off",
+                "get",
                 "server on/off",
                 "client on/off",
                 "server mode <original/fixed/random/generated>",
@@ -60,7 +61,19 @@ public class OfflineUUIDCommand extends Command {
                 return OK;
             }))
             .then(sideCommand("server", PLUGIN_CONFIG.server))
-            .then(sideCommand("client", PLUGIN_CONFIG.client));
+            .then(sideCommand("client", PLUGIN_CONFIG.client))
+            .then(literal("get").executes(c -> {
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Status")
+                    .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
+                    .addField("Server Enabled", toggleStr(PLUGIN_CONFIG.server.enabled))
+                    .addField("Server Mode", PLUGIN_CONFIG.server.mode.name().toLowerCase(Locale.ROOT))
+                    .addField("Server Fixed UUID", String.valueOf(PLUGIN_CONFIG.server.fixedUuid))
+                    .addField("Client Enabled", toggleStr(PLUGIN_CONFIG.client.enabled))
+                    .addField("Client Mode", PLUGIN_CONFIG.client.mode.name().toLowerCase(Locale.ROOT))
+                    .addField("Client Fixed UUID", String.valueOf(PLUGIN_CONFIG.client.fixedUuid));
+                return OK;
+            }));
     }
 
     private LiteralArgumentBuilder<CommandContext> sideCommand(final String sideName, final OfflineUUIDConfig.SideConfig config) {

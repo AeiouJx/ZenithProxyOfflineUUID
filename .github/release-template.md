@@ -3,22 +3,23 @@
 This release includes the latest updates to ZenithProxyOfflineUUID.
 
 #### Highlights
-- Lightweight config-only approach for controlling offline UUID
-- Supports `fixed`, `random`, and `generated` UUID modes
-- Generated mode supports optional `prefix + username` UUID generation
-- Sets `CONFIG.authentication.offlineUUID` directly (no packet interception)
+- Packet interception approach for controlling offline UUID
+- Client and server UUID behavior can be configured separately
+- Supports `original`, `fixed`, `random`, and `generated` modes
+- Supports generated UUIDs with or without a prefix
+- Client-side UUID rewriting only applies while ZenithProxy is using offline authentication
 - Added `get` subcommand to show current configuration
 
 #### Recommended usage
 ```text
 offlineuuid on
-offlineuuid mode generated
-offlineuuid prefix OfflinePlayer:
-offlineuuid usePrefix on
+offlineuuid server off
+offlineuuid client on
 ```
 
 #### Notes
-- This plugin is only for UUID control, not authentication bypass
+- `server` UUID rewriting is not recommended for security-sensitive use
+- This plugin is primarily intended for client-side UUID control when ZenithProxy connects outward with offline authentication
 - Does not bypass Mojang online-mode authentication
 
 #### Artifact

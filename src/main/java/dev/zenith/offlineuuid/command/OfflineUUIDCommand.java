@@ -24,7 +24,7 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public CommandUsage commandUsage() {
         return CommandUsage.builder()
-            .name("UUID")
+            .name("OFFLINEUUID")
             .category(CommandCategory.MODULE)
             .description("""
                 Manage server-side and client-side UUID rewrite behavior.
@@ -51,7 +51,7 @@ public class OfflineUUIDCommand extends Command {
 
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
-        return command("uuid")
+        return command("offlineuuid")
             .then(argument("toggle", toggle()).executes(c -> {
                 PLUGIN_CONFIG.enabled = getToggle(c, "toggle");
                 MODULE.get(OfflineUUID.class).syncEnabledFromConfig();

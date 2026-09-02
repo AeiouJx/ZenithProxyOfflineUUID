@@ -1,49 +1,51 @@
-## ZenithProxyUUID __VERSION__
+## ZenithProxyOfflineUUID __VERSION__
 
 ### English
 
-This release includes the latest updates to ZenithProxyUUID.
+This release includes the latest updates to ZenithProxyOfflineUUID.
 
 #### Highlights
-- Client and server UUID behavior can be configured separately
-- Supports `original`, `fixed`, `random`, and `generated` modes
-- Supports generated UUIDs with or without a prefix
-- Client-side UUID rewriting only applies while ZenithProxy is using offline authentication
+- Lightweight config-only approach for controlling offline UUID
+- Supports `fixed`, `random`, and `generated` UUID modes
+- Generated mode supports optional `prefix + username` UUID generation
+- Sets `CONFIG.authentication.offlineUUID` directly (no packet interception)
 
 #### Recommended usage
 ```text
-uuid on
-uuid server off
-uuid client on
+offlineuuid on
+offlineuuid mode generated
+offlineuuid prefix OfflinePlayer:
+offlineuuid usePrefix on
 ```
 
 #### Notes
-- `server` UUID rewriting is not recommended for security-sensitive use
-- This plugin is primarily intended for client-side UUID control when ZenithProxy connects outward with offline authentication
+- This plugin is only for UUID control, not authentication bypass
+- Does not bypass Mojang online-mode authentication
 
 #### Artifact
 - `__JAR_NAME__`
 
 ### 中文
 
-这个版本包含 ZenithProxyUUID 的最新更新。
+这个版本包含 ZenithProxyOfflineUUID 的最新更新。
 
 #### 主要内容
-- `client` 和 `server` 两侧的 UUID 行为可以分开配置
-- 支持 `original`、`fixed`、`random`、`generated` 四种模式
-- 支持“带前缀”或“不带前缀”的生成式 UUID
-- `client` 侧 UUID 改写仅在 ZenithProxy 使用离线登录时生效
+- 轻量级纯配置方式控制离线 UUID
+- 支持 `fixed`、`random`、`generated` 三种模式
+- generated 模式支持可选的 `前缀 + 用户名` 生成方式
+- 直接设置 `CONFIG.authentication.offlineUUID`（无数据包拦截）
 
 #### 推荐用法
 ```text
-uuid on
-uuid server off
-uuid client on
+offlineuuid on
+offlineuuid mode generated
+offlineuuid prefix OfflinePlayer:
+offlineuuid usePrefix on
 ```
 
 #### 说明
-- 出于安全考虑，不建议把 `server` 侧 UUID 改写作为常规方案使用
-- 这个插件的主要用途是 ZenithProxy 在离线认证向目标服务器发起连接时，对 `client` 侧 UUID 进行控制
+- 本插件仅用于 UUID 控制，不能绕过身份验证
+- 不能绕过 Mojang 在线模式认证
 
 #### 构建产物
 - `__JAR_NAME__`

@@ -34,9 +34,9 @@ ZenithProxy whitelist checks are effectively UUID-based, so if you rewrite the U
 Recommended safe setup:
 
 ```text
-uuid on
-uuid server off
-uuid client on
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
 ```
 
 ## Features
@@ -59,7 +59,7 @@ uuid client on
 ### Option 1: Download a release
 
 1. Open the [Releases](https://github.com/AeiouJx/ZenithProxyOfflineUUID/releases) page.
-2. Download the latest `ZenithProxyUUID-<version>.jar` or the published plugin jar.
+2. Download the latest `ZenithProxyOfflineUUID-<version>.jar` or the published plugin jar.
 3. Put the jar in the `plugins` folder next to your ZenithProxy launcher.
 4. Restart ZenithProxy.
 
@@ -76,37 +76,37 @@ The built jar will be placed in `build/libs`.
 Base command:
 
 ```text
-uuid
+offlineuuid
 ```
 
 Examples:
 
 ```text
-uuid on
-uuid server off
-uuid client on
-uuid client mode generated
-uuid client prefix OfflinePlayer:
-uuid client usePrefix on
-uuid client mode fixed
-uuid client set 123e4567-e89b-12d3-a456-426614174000
-uuid client mode random
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
+offlineuuid client mode generated
+offlineuuid client prefix OfflinePlayer:
+offlineuuid client usePrefix on
+offlineuuid client mode fixed
+offlineuuid client set 123e4567-e89b-12d3-a456-426614174000
+offlineuuid client mode random
 ```
 
 Available side commands:
 
-- `uuid server on|off`
-- `uuid client on|off`
-- `uuid server mode <original/fixed/random/generated>`
-- `uuid client mode <original/fixed/random/generated>`
-- `uuid server prefix <value>`
-- `uuid client prefix <value>`
-- `uuid server usePrefix on|off`
-- `uuid client usePrefix on|off`
-- `uuid server set <uuid>`
-- `uuid client set <uuid>`
-- `uuid server clear`
-- `uuid client clear`
+- `offlineuuid server on|off`
+- `offlineuuid client on|off`
+- `offlineuuid server mode <original/fixed/random/generated>`
+- `offlineuuid client mode <original/fixed/random/generated>`
+- `offlineuuid server prefix <value>`
+- `offlineuuid client prefix <value>`
+- `offlineuuid server usePrefix on|off`
+- `offlineuuid client usePrefix on|off`
+- `offlineuuid server set <uuid>`
+- `offlineuuid client set <uuid>`
+- `offlineuuid server clear`
+- `offlineuuid client clear`
 
 Mode meanings:
 
@@ -120,31 +120,31 @@ Mode meanings:
 ### Safe default
 
 ```text
-uuid on
-uuid server off
-uuid client on
-uuid client mode generated
-uuid client prefix OfflinePlayer:
-uuid client usePrefix on
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
+offlineuuid client mode generated
+offlineuuid client prefix OfflinePlayer:
+offlineuuid client usePrefix on
 ```
 
 ### Fixed outbound UUID
 
 ```text
-uuid on
-uuid server off
-uuid client on
-uuid client mode fixed
-uuid client set 70542937-7f25-32a5-8a47-600e13eb5b68
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
+offlineuuid client mode fixed
+offlineuuid client set 70542937-7f25-32a5-8a47-600e13eb5b68
 ```
 
 ### Random outbound UUID
 
 ```text
-uuid on
-uuid server off
-uuid client on
-uuid client mode random
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
+offlineuuid client mode random
 ```
 
 ## How It Works
@@ -177,8 +177,8 @@ This repository includes GitHub Actions for automation:
 
 ## Project Info
 
-- Plugin name: `ZenithProxyUUID`
-- Plugin id: `uuid`
+- Plugin name: `ZenithProxyOfflineUUID`
+- Plugin id: `offlineuuid`
 - Package: `dev.zenith.offlineuuid`
 - Repository name: `ZenithProxyOfflineUUID`
 

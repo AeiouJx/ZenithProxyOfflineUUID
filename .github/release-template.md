@@ -1,8 +1,8 @@
-## ZenithProxyUUID __VERSION__
+## ZenithProxyOfflineUUID __VERSION__
 
 ### English
 
-This release includes the latest updates to ZenithProxyUUID.
+This release includes the latest updates to ZenithProxyOfflineUUID.
 
 #### Highlights
 - Client and server UUID behavior can be configured separately
@@ -12,9 +12,9 @@ This release includes the latest updates to ZenithProxyUUID.
 
 #### Recommended usage
 ```text
-uuid on
-uuid server off
-uuid client on
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
 ```
 
 #### Notes
@@ -26,7 +26,7 @@ uuid client on
 
 ### 中文
 
-这个版本包含 ZenithProxyUUID 的最新更新。
+这个版本包含 ZenithProxyOfflineUUID 的最新更新。
 
 #### 主要内容
 - `client` 和 `server` 两侧的 UUID 行为可以分开配置
@@ -36,9 +36,9 @@ uuid client on
 
 #### 推荐用法
 ```text
-uuid on
-uuid server off
-uuid client on
+offlineuuid on
+offlineuuid server off
+offlineuuid client on
 ```
 
 #### 说明

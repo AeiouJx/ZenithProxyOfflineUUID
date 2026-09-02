@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-02
+
+### Changed
+
+- Renamed command from `uuid` to `offlineuuid`
+- Rewrote as pure config plugin — sets `CONFIG.authentication.offlineUUID` directly, no packet interception
+- Added `get` subcommand to show current UUID configuration and active offlineUUID value
+- Added `fixed`, `random`, `generated` UUID modes
+- Renamed plugin id from `uuid` to `offlineuuid`
+- Renamed plugin from `ZenithProxyUUID` to `ZenithProxyOfflineUUID`
+
 ## [1.0.1] - 2026-04-21
 
 ### Changed

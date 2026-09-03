@@ -25,20 +25,19 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public CommandUsage commandUsage() {
         return CommandUsage.builder()
-            .name("OFFLINEUUID")
+            .name("offlineuuid")
             .category(CommandCategory.MODULE)
             .description("""
                 Manage offline UUID behavior.
                 Sets the UUID used when ZenithProxy connects outward with offline auth.
                 """)
             .usageLines(
-                "on/off",
                 "get",
                 "mode <fixed/random/generated>",
                 "set <uuid>",
                 "clear",
                 "prefix <value>",
-                "usePrefix on/off"
+                "prefix on/off"
             )
             .build();
     }
@@ -46,22 +45,12 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineuuid")
-            .then(argument("toggle", toggle()).executes(c -> {
-                PLUGIN_CONFIG.enabled = getToggle(c, "toggle");
-                if (PLUGIN_CONFIG.enabled) {
-                    OfflineUUID.applyUuid();
-                }
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Plugin " + toggleStrCaps(PLUGIN_CONFIG.enabled));
-                return OK;
-            }))
             .then(literal("get").executes(c -> {
                 c.getSource().getEmbed()
                     .title("OfflineUUID Status")
-                    .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
+                    .addField("Enabled", "on")
                     .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
                     .addField("Prefix", PLUGIN_CONFIG.prefix)
-                    .addField("Use Prefix", toggleStr(PLUGIN_CONFIG.addPrefix))
                     .addField("Fixed UUID", String.valueOf(PLUGIN_CONFIG.fixedUuid))
                     .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                         ? CONFIG.authentication.offlineUUID.toString()
@@ -70,9 +59,7 @@ public class OfflineUUIDCommand extends Command {
             }))
             .then(literal("mode").then(argument("mode", enumStrings("fixed", "random", "generated")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
-                if (PLUGIN_CONFIG.enabled) {
-                    OfflineUUID.applyUuid();
-                }
+                OfflineUUID.applyUuid();
                 c.getSource().getEmbed()
                     .title("OfflineUUID Mode Set")
                     .description(PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT));
@@ -89,7 +76,7 @@ public class OfflineUUIDCommand extends Command {
                     return ERROR;
                 }
                 PLUGIN_CONFIG.fixedUuid = uuid.toString();
-                if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.FIXED) {
+                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.FIXED) {
                     OfflineUUID.applyUuid();
                 }
                 c.getSource().getEmbed()
@@ -106,7 +93,7 @@ public class OfflineUUIDCommand extends Command {
             }))
             .then(literal("prefix").then(argument("prefix", string()).executes(c -> {
                 PLUGIN_CONFIG.prefix = getString(c, "prefix");
-                if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.GENERATED) {
+                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.GENERATED) {
                     OfflineUUID.applyUuid();
                 }
                 c.getSource().getEmbed()
@@ -114,9 +101,9 @@ public class OfflineUUIDCommand extends Command {
                     .description(PLUGIN_CONFIG.prefix);
                 return OK;
             })))
-            .then(literal("usePrefix").then(argument("toggle", toggle()).executes(c -> {
+            .then(literal("prefix").then(argument("toggle", toggle()).executes(c -> {
                 PLUGIN_CONFIG.addPrefix = getToggle(c, "toggle");
-                if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.GENERATED) {
+                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.GENERATED) {
                     OfflineUUID.applyUuid();
                 }
                 c.getSource().getEmbed()
@@ -129,10 +116,9 @@ public class OfflineUUIDCommand extends Command {
     public void defaultEmbed(Embed embed) {
         embed
             .primaryColor()
-            .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
+            .addField("Enabled", "on")
             .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
             .addField("Prefix", PLUGIN_CONFIG.prefix)
-            .addField("Use Prefix", toggleStr(PLUGIN_CONFIG.addPrefix))
             .addField("Fixed UUID", String.valueOf(PLUGIN_CONFIG.fixedUuid))
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()

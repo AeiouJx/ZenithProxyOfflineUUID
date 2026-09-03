@@ -1,8 +1,7 @@
 package dev.zenith.offlineuuid;
 
 public class OfflineUUIDConfig {
-    public boolean enabled = false;
-    public Mode mode = Mode.RANDOM;
+    public Mode mode = Mode.GENERATED;
     public String fixedUuid = null;
     public boolean addPrefix = true;
     public String prefix = "OfflinePlayer:";

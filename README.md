@@ -46,26 +46,25 @@ offlineuuid
 Examples:
 
 ```text
-offlineuuid on
 offlineuuid get
 offlineuuid mode fixed
 offlineuuid set 123e4567-e89b-12d3-a456-426614174000
 offlineuuid mode random
 offlineuuid mode generated
 offlineuuid prefix OfflinePlayer:
-offlineuuid usePrefix on
+offlineuuid prefix on
+offlineuuid prefix off
 offlineuuid clear
 ```
 
 Available subcommands:
 
-- `offlineuuid on|off` - enable or disable the plugin
 - `offlineuuid get` - show current configuration and active offlineUUID value
 - `offlineuuid mode <fixed/random/generated>` - set UUID generation mode
 - `offlineuuid set <uuid>` - set a fixed UUID
 - `offlineuuid clear` - clear the fixed UUID
 - `offlineuuid prefix <value>` - set the prefix for generated mode
-- `offlineuuid usePrefix on|off` - toggle prefix usage in generated mode
+- `offlineuuid prefix on/off` - toggle prefix usage in generated mode
 
 Mode meanings:
 
@@ -78,7 +77,6 @@ Mode meanings:
 ### Fixed outbound UUID
 
 ```text
-offlineuuid on
 offlineuuid mode fixed
 offlineuuid set 70542937-7f25-32a5-8a47-600e13eb5b68
 ```
@@ -86,22 +84,20 @@ offlineuuid set 70542937-7f25-32a5-8a47-600e13eb5b68
 ### Generated UUID with prefix
 
 ```text
-offlineuuid on
 offlineuuid mode generated
 offlineuuid prefix OfflinePlayer:
-offlineuuid usePrefix on
+offlineuuid prefix on
 ```
 
 ### Random UUID
 
 ```text
-offlineuuid on
 offlineuuid mode random
 ```
 
 ## How It Works
 
-When enabled, the plugin sets `CONFIG.authentication.offlineUUID` before ZenithProxy connects to the target server. This field is read by the built-in `Authenticator.login()` method in ZenithProxy's outbound connection flow.
+The plugin sets `CONFIG.authentication.offlineUUID` before ZenithProxy connects to the target server. This field is read by the built-in `Authenticator.login()` method in ZenithProxy's outbound connection flow.
 
 No packet interception or module system is involved — the plugin only modifies a config value.
 

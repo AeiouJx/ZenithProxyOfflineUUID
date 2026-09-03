@@ -12,9 +12,6 @@ public class OfflineUUID {
 
     public static void applyUuid() {
         final OfflineUUIDConfig config = OfflineUUIDPlugin.PLUGIN_CONFIG;
-        if (!config.enabled) {
-            return;
-        }
         switch (config.mode) {
             case FIXED -> {
                 UUID uuid = parseConfiguredUuid(config.fixedUuid);

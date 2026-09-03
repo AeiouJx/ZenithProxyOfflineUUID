@@ -17,7 +17,6 @@ public class OfflineUUID {
                 UUID uuid = parseConfiguredUuid(config.fixedUuid);
                 CONFIG.authentication.offlineUUID = uuid;
             }
-            case RANDOM -> CONFIG.authentication.offlineUUID = null;
             case GENERATED -> {
                 String source = buildGenerationSource(config);
                 CONFIG.authentication.offlineUUID = UUID.nameUUIDFromBytes(source.getBytes(StandardCharsets.UTF_8));

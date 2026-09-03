@@ -7,7 +7,6 @@ public class OfflineUUIDConfig {
 
     public enum Mode {
         FIXED,
-        RANDOM,
         GENERATED
     }
 }

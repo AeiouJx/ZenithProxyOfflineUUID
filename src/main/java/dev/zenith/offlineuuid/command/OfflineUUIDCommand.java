@@ -31,7 +31,7 @@ public class OfflineUUIDCommand extends Command {
                 """)
             .usageLines(
                 "get",
-                "mode <fixed/random/generated>",
+                "mode <fixed/generated>",
                 "set <uuid>",
                 "clear",
                 "prefix <value>",
@@ -55,7 +55,7 @@ public class OfflineUUIDCommand extends Command {
                         : "(random)");
                 return OK;
             }))
-            .then(literal("mode").then(argument("mode", enumStrings("fixed", "random", "generated")).executes(c -> {
+            .then(literal("mode").then(argument("mode", enumStrings("fixed", "generated")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
                 OfflineUUID.applyUuid();
                 c.getSource().getEmbed()
@@ -114,6 +114,7 @@ public class OfflineUUIDCommand extends Command {
     public void defaultEmbed(Embed embed) {
         embed
             .primaryColor()
+            .addField("Enabled", "on")
             .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
             .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "OfflinePlayer:")
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null

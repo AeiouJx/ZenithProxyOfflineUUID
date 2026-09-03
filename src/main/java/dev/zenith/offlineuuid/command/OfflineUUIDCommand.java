@@ -52,7 +52,7 @@ public class OfflineUUIDCommand extends Command {
                     .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
                     .addField("Prefix", PLUGIN_CONFIG.prefix)
                     .addField("Fixed UUID", String.valueOf(PLUGIN_CONFIG.fixedUuid))
-                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
+                    .addField("offlineUUID", CONFIG.authentication.offlineUUID != null
                         ? CONFIG.authentication.offlineUUID.toString()
                         : "(random)");
                 return OK;
@@ -120,7 +120,7 @@ public class OfflineUUIDCommand extends Command {
             .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
             .addField("Prefix", PLUGIN_CONFIG.prefix)
             .addField("Fixed UUID", String.valueOf(PLUGIN_CONFIG.fixedUuid))
-            .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
+            .addField("offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()
                 : "(random)");
     }

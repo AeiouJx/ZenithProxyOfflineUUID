@@ -40,31 +40,31 @@ The built jar will be placed in `build/libs`.
 Base command:
 
 ```text
-offlineuuid
+offlineUUID
 ```
 
 Examples:
 
 ```text
-offlineuuid get
-offlineuuid mode fixed
-offlineuuid set 123e4567-e89b-12d3-a456-426614174000
-offlineuuid mode random
-offlineuuid mode generated
-offlineuuid prefix OfflinePlayer:
-offlineuuid prefix on
-offlineuuid prefix off
-offlineuuid clear
+offlineUUID get
+offlineUUID mode fixed
+offlineUUID set 123e4567-e89b-12d3-a456-426614174000
+offlineUUID mode random
+offlineUUID mode generated
+offlineUUID prefix OfflinePlayer:
+offlineUUID prefix on
+offlineUUID prefix off
+offlineUUID clear
 ```
 
 Available subcommands:
 
-- `offlineuuid get` - show current configuration and active offlineUUID value
-- `offlineuuid mode <fixed/random/generated>` - set UUID generation mode
-- `offlineuuid set <uuid>` - set a fixed UUID
-- `offlineuuid clear` - clear the fixed UUID
-- `offlineuuid prefix <value>` - set the prefix for generated mode
-- `offlineuuid prefix on/off` - toggle prefix usage in generated mode
+- `offlineUUID get` - show current configuration and active offlineUUID value
+- `offlineUUID mode <fixed/random/generated>` - set UUID generation mode
+- `offlineUUID set <uuid>` - set a fixed UUID
+- `offlineUUID clear` - clear the fixed UUID
+- `offlineUUID prefix <value>` - set the prefix for generated mode
+- `offlineUUID prefix on/off` - toggle prefix usage in generated mode
 
 Mode meanings:
 
@@ -77,22 +77,22 @@ Mode meanings:
 ### Fixed outbound UUID
 
 ```text
-offlineuuid mode fixed
-offlineuuid set 70542937-7f25-32a5-8a47-600e13eb5b68
+offlineUUID mode fixed
+offlineUUID set 70542937-7f25-32a5-8a47-600e13eb5b68
 ```
 
 ### Generated UUID with prefix
 
 ```text
-offlineuuid mode generated
-offlineuuid prefix OfflinePlayer:
-offlineuuid prefix on
+offlineUUID mode generated
+offlineUUID prefix OfflinePlayer:
+offlineUUID prefix on
 ```
 
 ### Random UUID
 
 ```text
-offlineuuid mode random
+offlineUUID mode random
 ```
 
 ## How It Works
@@ -123,7 +123,7 @@ This repository includes GitHub Actions for automation:
 ## Project Info
 
 - Plugin name: `ZenithProxyOfflineUUID`
-- Plugin id: `offlineuuid`
+- Plugin id: `offlineUUID`
 - Package: `dev.zenith.offlineuuid`
 - Repository name: `ZenithProxyOfflineUUID`
 

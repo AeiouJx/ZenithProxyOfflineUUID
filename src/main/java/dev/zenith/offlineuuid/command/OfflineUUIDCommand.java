@@ -25,7 +25,7 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public CommandUsage commandUsage() {
         return CommandUsage.builder()
-            .name("offlineuuid")
+            .name("offlineUUID")
             .category(CommandCategory.MODULE)
             .description("""
                 Manage offline UUID behavior.
@@ -44,7 +44,7 @@ public class OfflineUUIDCommand extends Command {
 
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
-        return command("offlineuuid")
+        return command("offlineUUID")
             .then(literal("get").executes(c -> {
                 c.getSource().getEmbed()
                     .title("OfflineUUID Status")

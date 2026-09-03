@@ -42,10 +42,9 @@ public class OfflineUUID {
     }
 
     private static String buildGenerationSource(final OfflineUUIDConfig config) {
-        if (!config.addPrefix) {
+        if (config.prefix == null) {
             return CONFIG.authentication.username;
         }
-        final String prefix = config.prefix == null ? "" : config.prefix;
-        return prefix + CONFIG.authentication.username;
+        return config.prefix + CONFIG.authentication.username;
     }
 }

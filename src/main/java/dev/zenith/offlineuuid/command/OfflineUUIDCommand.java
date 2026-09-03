@@ -17,8 +17,6 @@ import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static com.zenith.Globals.CONFIG;
 import static com.zenith.command.brigadier.EnumStringArgumentType.enumStrings;
-import static com.zenith.command.brigadier.ToggleArgumentType.getToggle;
-import static com.zenith.command.brigadier.ToggleArgumentType.toggle;
 import static dev.zenith.offlineuuid.OfflineUUIDPlugin.PLUGIN_CONFIG;
 
 public class OfflineUUIDCommand extends Command {
@@ -37,7 +35,7 @@ public class OfflineUUIDCommand extends Command {
                 "set <uuid>",
                 "clear",
                 "prefix <value>",
-                "prefix on/off"
+                "prefix clear"
             )
             .build();
     }
@@ -94,13 +92,13 @@ public class OfflineUUIDCommand extends Command {
                     .description(PLUGIN_CONFIG.prefix);
                 return OK;
             })))
-            .then(literal("prefix").then(argument("toggle", toggle()).executes(c -> {
-                PLUGIN_CONFIG.addPrefix = getToggle(c, "toggle");
+            .then(literal("prefix").then(literal("clear").executes(c -> {
+                PLUGIN_CONFIG.prefix = null;
                 if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.GENERATED) {
                     OfflineUUID.applyUuid();
                 }
                 c.getSource().getEmbed()
-                    .title("OfflineUUID Prefix Usage " + toggleStrCaps(PLUGIN_CONFIG.addPrefix));
+                    .title("OfflineUUID Prefix Cleared");
                 return OK;
             })));
     }
@@ -111,7 +109,7 @@ public class OfflineUUIDCommand extends Command {
             .primaryColor()
             .addField("Enabled", "on")
             .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
-            .addField("Prefix", PLUGIN_CONFIG.prefix)
+            .addField("Prefix", String.valueOf(PLUGIN_CONFIG.prefix))
             .addField("Fixed UUID", String.valueOf(PLUGIN_CONFIG.fixedUuid))
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()

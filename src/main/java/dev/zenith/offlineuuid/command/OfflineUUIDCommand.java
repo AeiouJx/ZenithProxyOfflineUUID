@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static com.mojang.brigadier.arguments.StringArgumentType.string;
+import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static com.zenith.Globals.CONFIG;
 import static com.zenith.command.brigadier.EnumStringArgumentType.enumStrings;
 import static dev.zenith.offlineuuid.OfflineUUIDPlugin.PLUGIN_CONFIG;
@@ -45,7 +45,10 @@ public class OfflineUUIDCommand extends Command {
         return command("offlineUUID")
             .then(literal("get").executes(c -> {
                 c.getSource().getEmbed()
-                    .title("OfflineUUID Status");
+                    .title("OfflineUUID Status")
+                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
+                        ? CONFIG.authentication.offlineUUID.toString()
+                        : "null");
                 return OK;
             }))
             .then(literal("mode").then(argument("mode", enumStrings("fixed", "random", "generated")).executes(c -> {
@@ -56,10 +59,10 @@ public class OfflineUUIDCommand extends Command {
                     .description(PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT));
                 return OK;
             })))
-            .then(literal("set").then(argument("uuid", string()).executes(c -> {
+            .then(literal("set").then(argument("uuid", greedyString()).executes(c -> {
                 final UUID uuid;
                 try {
-                    uuid = UUID.fromString(getString(c, "uuid"));
+                    uuid = UUID.fromString(getString(c, "uuid").trim());
                 } catch (IllegalArgumentException e) {
                     c.getSource().getEmbed()
                         .title("Invalid UUID")
@@ -82,8 +85,8 @@ public class OfflineUUIDCommand extends Command {
                     .title("OfflineUUID Fixed UUID Cleared");
                 return OK;
             }))
-            .then(literal("prefix").then(argument("prefix", string()).executes(c -> {
-                PLUGIN_CONFIG.prefix = getString(c, "prefix");
+            .then(literal("prefix").then(argument("prefix", greedyString()).executes(c -> {
+                PLUGIN_CONFIG.prefix = getString(c, "prefix").trim();
                 if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.GENERATED) {
                     OfflineUUID.applyUuid();
                 }
@@ -107,12 +110,8 @@ public class OfflineUUIDCommand extends Command {
     public void defaultEmbed(Embed embed) {
         embed
             .primaryColor()
-            .addField("Enabled", "on")
-            .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
-            .addField("Prefix", String.valueOf(PLUGIN_CONFIG.prefix))
-            .addField("Fixed UUID", String.valueOf(PLUGIN_CONFIG.fixedUuid))
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()
-                : "(random)");
+                : "null");
     }
 }

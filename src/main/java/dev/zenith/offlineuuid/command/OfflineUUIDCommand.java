@@ -43,12 +43,16 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineUUID")
+            .executes(c -> {
+                defaultEmbed(c.getSource().getEmbed());
+                return OK;
+            })
             .then(literal("get").executes(c -> {
                 c.getSource().getEmbed()
                     .title("OfflineUUID Status")
                     .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                         ? CONFIG.authentication.offlineUUID.toString()
-                        : "null");
+                        : "(random)");
                 return OK;
             }))
             .then(literal("mode").then(argument("mode", enumStrings("fixed", "random", "generated")).executes(c -> {
@@ -110,8 +114,10 @@ public class OfflineUUIDCommand extends Command {
     public void defaultEmbed(Embed embed) {
         embed
             .primaryColor()
+            .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
+            .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "OfflinePlayer:")
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()
-                : "null");
+                : "(random)");
     }
 }

@@ -4,6 +4,7 @@ import com.zenith.plugin.api.Plugin;
 import com.zenith.plugin.api.PluginAPI;
 import com.zenith.plugin.api.ZenithProxyPlugin;
 import dev.zenith.offlineuuid.command.OfflineUUIDCommand;
+import dev.zenith.offlineuuid.module.OfflineUUID;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 @Plugin(
@@ -24,6 +25,7 @@ public class OfflineUUIDPlugin implements ZenithProxyPlugin {
         LOG.info("OfflineUUID Plugin loading...");
         PLUGIN_CONFIG = pluginAPI.registerConfig(BuildConstants.PLUGIN_ID, OfflineUUIDConfig.class);
         pluginAPI.registerCommand(new OfflineUUIDCommand());
+        pluginAPI.registerModule(new OfflineUUID());
         LOG.info("OfflineUUID Plugin loaded!");
     }
 }

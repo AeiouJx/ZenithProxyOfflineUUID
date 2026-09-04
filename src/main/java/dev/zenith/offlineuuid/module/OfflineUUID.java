@@ -2,12 +2,15 @@ package dev.zenith.offlineuuid.module;
 
 import com.github.rfresh2.EventConsumer;
 import com.zenith.event.client.ClientStartConnectEvent;
+import dev.zenith.offlineuuid.OfflineUUIDConfig;
 import dev.zenith.offlineuuid.OfflineUUIDPlugin;
 import com.zenith.module.api.Module;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.rfresh2.EventConsumer.of;
+import static com.zenith.Globals.CONFIG;
 import static dev.zenith.offlineuuid.OfflineUUIDPlugin.PLUGIN_CONFIG;
 
 public class OfflineUUID extends Module {
@@ -30,37 +33,22 @@ public class OfflineUUID extends Module {
 
     public static void applyUuid() {
         switch (PLUGIN_CONFIG.mode) {
-            case FIXED -> {
-                java.util.UUID uuid = parseConfiguredUuid(PLUGIN_CONFIG.fixedUuid);
-                com.zenith.Globals.CONFIG.authentication.offlineUUID = uuid;
-            }
-            case GENERATED -> {
+            case ORIGINAL -> CONFIG.authentication.offlineUUID = null;
+            case BY_NAME -> {
                 String source = buildGenerationSource(PLUGIN_CONFIG);
-                com.zenith.Globals.CONFIG.authentication.offlineUUID = java.util.UUID.nameUUIDFromBytes(source.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                CONFIG.authentication.offlineUUID = UUID.nameUUIDFromBytes(source.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             }
         }
     }
 
     public static void clearUuid() {
-        com.zenith.Globals.CONFIG.authentication.offlineUUID = null;
+        CONFIG.authentication.offlineUUID = null;
     }
 
-    private static java.util.UUID parseConfiguredUuid(final String uuidString) {
-        if (uuidString == null || uuidString.isBlank()) {
-            return null;
-        }
-        try {
-            return java.util.UUID.fromString(uuidString);
-        } catch (IllegalArgumentException e) {
-            OfflineUUIDPlugin.LOG.warn("Ignoring invalid configured UUID: {}", uuidString);
-            return null;
-        }
-    }
-
-    private static String buildGenerationSource(final dev.zenith.offlineuuid.OfflineUUIDConfig config) {
+    private static String buildGenerationSource(final OfflineUUIDConfig config) {
         if (config.prefix == null) {
-            return com.zenith.Globals.CONFIG.authentication.username;
+            return CONFIG.authentication.username;
         }
-        return config.prefix + com.zenith.Globals.CONFIG.authentication.username;
+        return config.prefix + CONFIG.authentication.username;
     }
 }

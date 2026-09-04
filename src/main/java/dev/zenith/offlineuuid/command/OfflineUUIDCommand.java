@@ -10,6 +10,7 @@ import dev.zenith.offlineuuid.OfflineUUIDPlugin;
 import dev.zenith.offlineuuid.module.OfflineUUID;
 
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
@@ -28,6 +29,8 @@ public class OfflineUUIDCommand extends Command {
                 Sets the UUID used when ZenithProxy connects outward with offline auth.
                 """)
             .usageLines(
+                "<uuid>",
+                "clear",
                 "mode <original/random/byName>",
                 "prefix <value>",
                 "prefix clear"
@@ -50,6 +53,28 @@ public class OfflineUUIDCommand extends Command {
                         : "(random)");
                 return OK;
             })
+            .then(argument("uuid", greedyString()).executes(c -> {
+                final UUID uuid;
+                try {
+                    uuid = UUID.fromString(getString(c, "uuid").trim());
+                } catch (IllegalArgumentException e) {
+                    c.getSource().getEmbed()
+                        .title("Invalid UUID")
+                        .description("Use the standard 8-4-4-4-12 UUID format.");
+                    return ERROR;
+                }
+                CONFIG.authentication.offlineUUID = uuid;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Set")
+                    .description(uuid.toString());
+                return OK;
+            }))
+            .then(literal("clear").executes(c -> {
+                CONFIG.authentication.offlineUUID = null;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Cleared");
+                return OK;
+            }))
             .then(literal("mode").then(argument("mode", enumStrings("original", "random", "byName")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
                 OfflineUUID.applyUuid();

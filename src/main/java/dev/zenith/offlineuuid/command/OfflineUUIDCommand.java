@@ -40,6 +40,7 @@ public class OfflineUUIDCommand extends Command {
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineUUID")
             .executes(c -> {
+                c.getSource().getEmbed().title("OfflineUUID");
                 defaultEmbed(c.getSource().getEmbed());
                 return OK;
             })
@@ -51,6 +52,12 @@ public class OfflineUUIDCommand extends Command {
                     .description(PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT));
                 return OK;
             })))
+            .then(literal("prefix").executes(c -> {
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Prefix")
+                    .description(PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null");
+                return OK;
+            }))
             .then(literal("prefix").then(argument("prefix", greedyString()).executes(c -> {
                 PLUGIN_CONFIG.prefix = getString(c, "prefix").trim();
                 if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BY_NAME) {

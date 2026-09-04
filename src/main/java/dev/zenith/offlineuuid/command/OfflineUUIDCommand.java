@@ -29,7 +29,7 @@ public class OfflineUUIDCommand extends Command {
                 Sets the UUID used when ZenithProxy connects outward with offline auth.
                 """)
             .usageLines(
-                "mode <original/byName>",
+                "mode <original/random/byName>",
                 "prefix <value>",
                 "prefix clear"
             )
@@ -43,7 +43,7 @@ public class OfflineUUIDCommand extends Command {
                 defaultEmbed(c.getSource().getEmbed());
                 return OK;
             })
-            .then(literal("mode").then(argument("mode", enumStrings("original", "byName")).executes(c -> {
+            .then(literal("mode").then(argument("mode", enumStrings("original", "random", "byName")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
                 OfflineUUID.applyUuid();
                 c.getSource().getEmbed()

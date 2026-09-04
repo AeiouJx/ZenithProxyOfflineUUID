@@ -6,6 +6,7 @@ public class OfflineUUIDConfig {
 
     public enum Mode {
         ORIGINAL,
+        RANDOM,
         BY_NAME
     }
 }

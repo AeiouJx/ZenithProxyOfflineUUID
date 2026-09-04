@@ -17,7 +17,7 @@ public class OfflineUUID extends Module {
 
     @Override
     public boolean enabledSetting() {
-        return true;
+        return PLUGIN_CONFIG.enabled;
     }
 
     @Override

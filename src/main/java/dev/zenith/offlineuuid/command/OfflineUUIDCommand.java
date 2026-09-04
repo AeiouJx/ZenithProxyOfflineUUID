@@ -16,6 +16,8 @@ import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static com.zenith.Globals.CONFIG;
 import static com.zenith.command.brigadier.EnumStringArgumentType.enumStrings;
+import static com.zenith.command.brigadier.ToggleArgumentType.getToggle;
+import static com.zenith.command.brigadier.ToggleArgumentType.toggle;
 import static dev.zenith.offlineuuid.OfflineUUIDPlugin.PLUGIN_CONFIG;
 
 public class OfflineUUIDCommand extends Command {
@@ -29,6 +31,7 @@ public class OfflineUUIDCommand extends Command {
                 Sets the UUID used when ZenithProxy connects outward with offline auth.
                 """)
             .usageLines(
+                "on/off",
                 "<uuid>",
                 "clear",
                 "mode <original/random/byName>",
@@ -41,18 +44,17 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineUUID")
-            .executes(c -> {
+            .then(argument("toggle", toggle()).executes(c -> {
+                PLUGIN_CONFIG.enabled = getToggle(c, "toggle");
+                if (PLUGIN_CONFIG.enabled) {
+                    OfflineUUID.applyUuid();
+                } else {
+                    OfflineUUID.clearUuid();
+                }
                 c.getSource().getEmbed()
-                    .title("OfflineUUID")
-                    .primaryColor()
-                    .addField("Enabled", "on")
-                    .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
-                    .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
-                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
-                        ? CONFIG.authentication.offlineUUID.toString()
-                        : "(random)");
+                    .title("OfflineUUID " + (PLUGIN_CONFIG.enabled ? "Enabled" : "Disabled"));
                 return OK;
-            })
+            }))
             .then(argument("uuid", greedyString()).executes(c -> {
                 final UUID uuid;
                 try {

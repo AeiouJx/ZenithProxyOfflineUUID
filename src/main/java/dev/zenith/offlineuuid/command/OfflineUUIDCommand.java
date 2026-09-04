@@ -44,6 +44,18 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineUUID")
+            .executes(c -> {
+                c.getSource().getEmbed()
+                    .title("OfflineUUID")
+                    .primaryColor()
+                    .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
+                    .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
+                    .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
+                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
+                        ? CONFIG.authentication.offlineUUID.toString()
+                        : "(random)");
+                return OK;
+            })
             .then(argument("toggle", toggle()).executes(c -> {
                 PLUGIN_CONFIG.enabled = getToggle(c, "toggle");
                 if (PLUGIN_CONFIG.enabled) {

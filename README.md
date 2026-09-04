@@ -46,31 +46,27 @@ offlineUUID
 Examples:
 
 ```text
-offlineUUID get
 offlineUUID mode fixed
 offlineUUID set 123e4567-e89b-12d3-a456-426614174000
-offlineUUID mode random
 offlineUUID mode generated
 offlineUUID prefix OfflinePlayer:
-offlineUUID prefix on
-offlineUUID prefix off
+offlineUUID prefix clear
 offlineUUID clear
 ```
 
 Available subcommands:
 
-- `offlineUUID get` - show current configuration and active offlineUUID value
-- `offlineUUID mode <fixed/random/generated>` - set UUID generation mode
+- `offlineUUID` - show current configuration and active offlineUUID value
+- `offlineUUID mode <fixed/generated>` - set UUID generation mode
 - `offlineUUID set <uuid>` - set a fixed UUID
 - `offlineUUID clear` - clear the fixed UUID
 - `offlineUUID prefix <value>` - set the prefix for generated mode
-- `offlineUUID prefix on/off` - toggle prefix usage in generated mode
+- `offlineUUID prefix clear` - clear the prefix
 
 Mode meanings:
 
 - `fixed`: always use the configured UUID
-- `random`: let ZenithProxy generate a random UUID (sets offlineUUID to null)
-- `generated`: generate a deterministic UUID from either `username` or `prefix + username`
+- `generated`: generate a deterministic UUID from `prefix + username`
 
 ## Typical Usage
 
@@ -86,20 +82,11 @@ offlineUUID set 70542937-7f25-32a5-8a47-600e13eb5b68
 ```text
 offlineUUID mode generated
 offlineUUID prefix OfflinePlayer:
-offlineUUID prefix on
-```
-
-### Random UUID
-
-```text
-offlineUUID mode random
 ```
 
 ## How It Works
 
-The plugin sets `CONFIG.authentication.offlineUUID` before ZenithProxy connects to the target server. This field is read by the built-in `Authenticator.login()` method in ZenithProxy's outbound connection flow.
-
-No packet interception or module system is involved — the plugin only modifies a config value.
+The plugin sets `CONFIG.authentication.offlineUUID` before ZenithProxy connects to the target server. In GENERATED mode, the UUID is auto-regenerated on each connection based on the current username. This field is read by the built-in `Authenticator.login()` method in ZenithProxy's outbound connection flow.
 
 ## Limitation
 

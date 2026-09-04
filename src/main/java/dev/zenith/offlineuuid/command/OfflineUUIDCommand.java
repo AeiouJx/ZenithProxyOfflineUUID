@@ -5,7 +5,6 @@ import com.zenith.command.api.Command;
 import com.zenith.command.api.CommandCategory;
 import com.zenith.command.api.CommandContext;
 import com.zenith.command.api.CommandUsage;
-import com.zenith.discord.Embed;
 import dev.zenith.offlineuuid.OfflineUUIDConfig;
 import dev.zenith.offlineuuid.OfflineUUIDPlugin;
 import dev.zenith.offlineuuid.module.OfflineUUID;
@@ -40,8 +39,15 @@ public class OfflineUUIDCommand extends Command {
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineUUID")
             .executes(c -> {
-                c.getSource().getEmbed().title("OfflineUUID");
-                defaultEmbed(c.getSource().getEmbed());
+                c.getSource().getEmbed()
+                    .title("OfflineUUID")
+                    .primaryColor()
+                    .addField("Enabled", "on")
+                    .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
+                    .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
+                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
+                        ? CONFIG.authentication.offlineUUID.toString()
+                        : "(random)");
                 return OK;
             })
             .then(literal("mode").then(argument("mode", enumStrings("original", "random", "byName")).executes(c -> {
@@ -77,17 +83,5 @@ public class OfflineUUIDCommand extends Command {
                     .title("OfflineUUID Prefix Cleared");
                 return OK;
             })));
-    }
-
-    @Override
-    public void defaultEmbed(Embed embed) {
-        embed
-            .primaryColor()
-            .addField("Enabled", "on")
-            .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
-            .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
-            .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
-                ? CONFIG.authentication.offlineUUID.toString()
-                : "(random)");
     }
 }

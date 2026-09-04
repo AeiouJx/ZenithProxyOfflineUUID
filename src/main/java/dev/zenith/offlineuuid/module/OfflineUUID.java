@@ -33,7 +33,7 @@ public class OfflineUUID extends Module {
 
     public static void applyUuid() {
         switch (PLUGIN_CONFIG.mode) {
-            case ORIGINAL -> CONFIG.authentication.offlineUUID = null;
+            case ORIGINAL -> { }
             case RANDOM -> CONFIG.authentication.offlineUUID = UUID.randomUUID();
             case BYNAME -> {
                 String source = buildGenerationSource(PLUGIN_CONFIG);

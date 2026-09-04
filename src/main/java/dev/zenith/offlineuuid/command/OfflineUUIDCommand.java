@@ -5,6 +5,7 @@ import com.zenith.command.api.Command;
 import com.zenith.command.api.CommandCategory;
 import com.zenith.command.api.CommandContext;
 import com.zenith.command.api.CommandUsage;
+import com.zenith.discord.Embed;
 import dev.zenith.offlineuuid.OfflineUUIDConfig;
 import dev.zenith.offlineuuid.OfflineUUIDPlugin;
 import dev.zenith.offlineuuid.module.OfflineUUID;
@@ -49,63 +50,60 @@ public class OfflineUUIDCommand extends Command {
                 if (PLUGIN_CONFIG.enabled) {
                     OfflineUUID.applyUuid();
                 }
-                showStatus(c.getSource().getEmbed());
-                return OK;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID " + toggleStrCaps(PLUGIN_CONFIG.enabled));
             }))
             .then(argument("uuid", greedyString()).executes(c -> {
-                final UUID uuid;
                 try {
-                    uuid = UUID.fromString(getString(c, "uuid").trim());
+                    UUID uuid = UUID.fromString(getString(c, "uuid").trim());
+                    CONFIG.authentication.offlineUUID = uuid;
+                    c.getSource().getEmbed()
+                        .title("OfflineUUID Set");
                 } catch (IllegalArgumentException e) {
                     c.getSource().getEmbed()
                         .title("Invalid UUID")
                         .description("Use the standard 8-4-4-4-12 UUID format.");
-                    return ERROR;
                 }
-                CONFIG.authentication.offlineUUID = uuid;
-                showStatus(c.getSource().getEmbed());
-                return OK;
             }))
             .then(literal("clear").executes(c -> {
                 CONFIG.authentication.offlineUUID = null;
-                showStatus(c.getSource().getEmbed());
-                return OK;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Cleared");
             }))
             .then(literal("mode").then(argument("mode", enumStrings("original", "random", "byName")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
                 if (PLUGIN_CONFIG.enabled) {
                     OfflineUUID.applyUuid();
                 }
-                showStatus(c.getSource().getEmbed());
-                return OK;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Mode Set");
             })))
             .then(literal("prefix").executes(c -> {
                 c.getSource().getEmbed()
                     .title("OfflineUUID Prefix")
                     .description(PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null");
-                return OK;
             }))
             .then(literal("prefix").then(argument("prefix", greedyString()).executes(c -> {
                 PLUGIN_CONFIG.prefix = getString(c, "prefix").trim();
                 if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
                     OfflineUUID.applyUuid();
                 }
-                showStatus(c.getSource().getEmbed());
-                return OK;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Prefix Set");
             })))
             .then(literal("prefix").then(literal("clear").executes(c -> {
                 PLUGIN_CONFIG.prefix = null;
                 if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
                     OfflineUUID.applyUuid();
                 }
-                showStatus(c.getSource().getEmbed());
-                return OK;
+                c.getSource().getEmbed()
+                    .title("OfflineUUID Prefix Cleared");
             })));
     }
 
-    private void showStatus(com.zenith.discord.Embed embed) {
+    @Override
+    public void defaultEmbed(Embed embed) {
         embed
-            .title("OfflineUUID")
             .primaryColor()
             .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
             .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))

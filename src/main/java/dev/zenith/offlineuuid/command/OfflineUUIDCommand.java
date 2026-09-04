@@ -44,25 +44,12 @@ public class OfflineUUIDCommand extends Command {
     @Override
     public LiteralArgumentBuilder<CommandContext> register() {
         return command("offlineUUID")
-            .executes(c -> {
-                c.getSource().getEmbed()
-                    .title("OfflineUUID")
-                    .primaryColor()
-                    .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
-                    .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
-                    .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
-                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
-                        ? CONFIG.authentication.offlineUUID.toString()
-                        : "(random)");
-                return OK;
-            })
             .then(argument("toggle", toggle()).executes(c -> {
                 PLUGIN_CONFIG.enabled = getToggle(c, "toggle");
                 if (PLUGIN_CONFIG.enabled) {
                     OfflineUUID.applyUuid();
                 }
-                c.getSource().getEmbed()
-                    .title("OfflineUUID " + (PLUGIN_CONFIG.enabled ? "Enabled" : "Disabled"));
+                showStatus(c.getSource().getEmbed());
                 return OK;
             }))
             .then(argument("uuid", greedyString()).executes(c -> {
@@ -76,23 +63,20 @@ public class OfflineUUIDCommand extends Command {
                     return ERROR;
                 }
                 CONFIG.authentication.offlineUUID = uuid;
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Set")
-                    .description(uuid.toString());
+                showStatus(c.getSource().getEmbed());
                 return OK;
             }))
             .then(literal("clear").executes(c -> {
                 CONFIG.authentication.offlineUUID = null;
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Cleared");
+                showStatus(c.getSource().getEmbed());
                 return OK;
             }))
             .then(literal("mode").then(argument("mode", enumStrings("original", "random", "byName")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
-                OfflineUUID.applyUuid();
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Mode Set")
-                    .description(PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT));
+                if (PLUGIN_CONFIG.enabled) {
+                    OfflineUUID.applyUuid();
+                }
+                showStatus(c.getSource().getEmbed());
                 return OK;
             })))
             .then(literal("prefix").executes(c -> {
@@ -103,22 +87,31 @@ public class OfflineUUIDCommand extends Command {
             }))
             .then(literal("prefix").then(argument("prefix", greedyString()).executes(c -> {
                 PLUGIN_CONFIG.prefix = getString(c, "prefix").trim();
-                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
+                if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
                     OfflineUUID.applyUuid();
                 }
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Prefix Set")
-                    .description(PLUGIN_CONFIG.prefix);
+                showStatus(c.getSource().getEmbed());
                 return OK;
             })))
             .then(literal("prefix").then(literal("clear").executes(c -> {
                 PLUGIN_CONFIG.prefix = null;
-                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
+                if (PLUGIN_CONFIG.enabled && PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
                     OfflineUUID.applyUuid();
                 }
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Prefix Cleared");
+                showStatus(c.getSource().getEmbed());
                 return OK;
             })));
+    }
+
+    private void showStatus(com.zenith.discord.Embed embed) {
+        embed
+            .title("OfflineUUID")
+            .primaryColor()
+            .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
+            .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
+            .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
+            .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
+                ? CONFIG.authentication.offlineUUID.toString()
+                : "(random)");
     }
 }

@@ -48,8 +48,6 @@ public class OfflineUUIDCommand extends Command {
                 PLUGIN_CONFIG.enabled = getToggle(c, "toggle");
                 if (PLUGIN_CONFIG.enabled) {
                     OfflineUUID.applyUuid();
-                } else {
-                    OfflineUUID.clearUuid();
                 }
                 c.getSource().getEmbed()
                     .title("OfflineUUID " + (PLUGIN_CONFIG.enabled ? "Enabled" : "Disabled"));

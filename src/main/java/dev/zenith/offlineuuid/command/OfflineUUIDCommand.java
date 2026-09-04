@@ -30,7 +30,6 @@ public class OfflineUUIDCommand extends Command {
                 Sets the UUID used when ZenithProxy connects outward with offline auth.
                 """)
             .usageLines(
-                "get",
                 "mode <fixed/generated>",
                 "set <uuid>",
                 "clear",
@@ -47,14 +46,6 @@ public class OfflineUUIDCommand extends Command {
                 defaultEmbed(c.getSource().getEmbed());
                 return OK;
             })
-            .then(literal("get").executes(c -> {
-                c.getSource().getEmbed()
-                    .title("OfflineUUID Status")
-                    .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
-                        ? CONFIG.authentication.offlineUUID.toString()
-                        : "(random)");
-                return OK;
-            }))
             .then(literal("mode").then(argument("mode", enumStrings("fixed", "generated")).executes(c -> {
                 PLUGIN_CONFIG.mode = OfflineUUIDConfig.Mode.valueOf(getString(c, "mode").toUpperCase(Locale.ROOT));
                 OfflineUUID.applyUuid();
@@ -116,7 +107,7 @@ public class OfflineUUIDCommand extends Command {
             .primaryColor()
             .addField("Enabled", "on")
             .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
-            .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "OfflinePlayer:")
+            .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()
                 : "(random)");

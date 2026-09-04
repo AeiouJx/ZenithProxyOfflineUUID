@@ -1,12 +1,12 @@
 package dev.zenith.offlineuuid;
 
 public class OfflineUUIDConfig {
-    public Mode mode = Mode.BY_NAME;
+    public Mode mode = Mode.BYNAME;
     public String prefix = "OfflinePlayer:";
 
     public enum Mode {
         ORIGINAL,
         RANDOM,
-        BY_NAME
+        BYNAME
     }
 }

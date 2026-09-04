@@ -60,7 +60,7 @@ public class OfflineUUIDCommand extends Command {
             }))
             .then(literal("prefix").then(argument("prefix", greedyString()).executes(c -> {
                 PLUGIN_CONFIG.prefix = getString(c, "prefix").trim();
-                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BY_NAME) {
+                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
                     OfflineUUID.applyUuid();
                 }
                 c.getSource().getEmbed()
@@ -70,7 +70,7 @@ public class OfflineUUIDCommand extends Command {
             })))
             .then(literal("prefix").then(literal("clear").executes(c -> {
                 PLUGIN_CONFIG.prefix = null;
-                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BY_NAME) {
+                if (PLUGIN_CONFIG.mode == OfflineUUIDConfig.Mode.BYNAME) {
                     OfflineUUID.applyUuid();
                 }
                 c.getSource().getEmbed()

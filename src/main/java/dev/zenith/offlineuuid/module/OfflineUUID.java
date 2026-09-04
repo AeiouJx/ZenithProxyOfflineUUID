@@ -35,7 +35,7 @@ public class OfflineUUID extends Module {
         switch (PLUGIN_CONFIG.mode) {
             case ORIGINAL -> CONFIG.authentication.offlineUUID = null;
             case RANDOM -> CONFIG.authentication.offlineUUID = UUID.randomUUID();
-            case BY_NAME -> {
+            case BYNAME -> {
                 String source = buildGenerationSource(PLUGIN_CONFIG);
                 CONFIG.authentication.offlineUUID = UUID.nameUUIDFromBytes(source.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             }

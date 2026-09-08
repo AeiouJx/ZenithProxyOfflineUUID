@@ -106,7 +106,7 @@ public class OfflineUUIDCommand extends Command {
         embed
             .primaryColor()
             .addField("Enabled", toggleStr(PLUGIN_CONFIG.enabled))
-            .addField("Mode", PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT))
+            .addField("Mode", PLUGIN_CONFIG.mode != null ? PLUGIN_CONFIG.mode.name().toLowerCase(Locale.ROOT) : "byName")
             .addField("Prefix", PLUGIN_CONFIG.prefix != null ? PLUGIN_CONFIG.prefix : "null")
             .addField("Current offlineUUID", CONFIG.authentication.offlineUUID != null
                 ? CONFIG.authentication.offlineUUID.toString()
